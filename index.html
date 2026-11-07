@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Fryday — картофель с сыром и хот-доги в Бишкеке</title>
+  <meta name="description" content="Fryday: картофель с сыром и соусами и хот-доги Fry Dog. Сделайте предзаказ и заберите без очереди.">
+  <meta name="theme-color" content="#E51D25">
+  <!-- Link preview in WhatsApp. After deploy, replace with the absolute URL, e.g. https://fryday.pages.dev/img/brand/logo-512.png -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Fryday — вкус, который не отпускает">
+  <meta property="og:description" content="Картофель с сыром и хот-доги. Предзаказ онлайн — заберите без очереди.">
+  <meta property="og:image" content="img/brand/logo-512.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="img/brand/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="img/brand/favicon-64.png">
+  <link rel="apple-touch-icon" href="img/brand/apple-touch-icon.png">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="site-header" id="siteHeader" aria-hidden="true">
+    <div class="container site-header__row">
+      <a class="brand" href="#top" tabindex="-1">
+        <img src="img/brand/logo-192.png" width="192" height="192" alt="">
+        <span data-cfg="BRAND">Fryday</span>
+      </a>
+      <a class="btn btn--primary btn--sm" href="order.html" tabindex="-1">Предзаказ</a>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- HERO. Background placeholder: to use a photo, add
+         style="background: url('img/hero.webp') center/cover" to the <section> below
+         and keep the text readable (add a cream overlay). -->
+    <section class="hero" id="hero">
+      <div class="hero__inner">
+        <picture>
+          <source srcset="img/brand/logo-512.webp" type="image/webp">
+          <img class="hero__logo" src="img/brand/logo-512.png" width="512" height="512" alt="Логотип Fryday" fetchpriority="high">
+        </picture>
+        <h1 class="hero__line">Вкус, который не отпускает</h1>
+        <p class="hero__sub">Картофель с сыром и хот-доги. Закажите заранее — заберёте горячим, без очереди.</p>
+        <a class="btn btn--primary btn--lg" href="order.html">Сделать предзаказ</a>
+      </div>
+      <a class="hero__scroll" href="#about">Листайте вниз ↓</a>
+    </section>
+
+    <section class="section section--white" id="about" aria-labelledby="aboutTitle">
+      <div class="container">
+        <h2 id="aboutTitle">О нас</h2>
+        <div class="about">
+          <p>Мы делаем одну вещь и делаем её хорошо: золотистый картофель, который жарим под каждый заказ, щедро посыпаем пармезаном и заливаем соусом на ваш выбор — от сырного и чесночного до трюфельного.</p>
+          <p>А когда хочется чего-то посытнее — берите Fry Dog: гриль-дог в мягкой булочке, румяная сосиска, хрустящие огурчики и жареный лук. Без лишнего, просто очень вкусно.</p>
+          <p>Чтобы не ждать у окошка, оформите предзаказ на сайте: выберите время, и к вашему приходу всё будет готово.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="menu" aria-labelledby="menuTitle">
+      <div class="container">
+        <h2 id="menuTitle">Меню</h2>
+        <div id="landingNotice" class="notice" role="status" hidden></div>
+        <div id="landingMenu" aria-live="polite">
+          <div class="state-box">
+            <div class="spinner spinner--dark" aria-hidden="true"></div>
+            Загружаем меню…
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--white" id="toppings" aria-labelledby="toppingsTitle" hidden>
+      <div class="container">
+        <h2 id="toppingsTitle">Топпинги</h2>
+        <p class="toppings-line">Идеальное дополнение к твоему боксу</p>
+        <div class="toppings" id="landingToppings"></div>
+      </div>
+    </section>
+
+    <section class="section" id="place" aria-labelledby="placeTitle">
+      <div class="container">
+        <h2 id="placeTitle">Адрес и часы</h2>
+        <div class="info">
+          <div class="info__row" data-cfg-row>
+            <span class="info__label">Адрес</span>
+            <span class="info__value" data-cfg="ADDRESS"></span>
+          </div>
+          <div class="info__row" data-hours-row>
+            <span class="info__label">Часы работы</span>
+            <span class="info__value" data-hours>—</span>
+          </div>
+          <div class="info__row" data-cfg-row>
+            <span class="info__label">Телефон</span>
+            <a class="info__value" data-cfg="PHONE_DISPLAY" data-cfg-tel></a>
+          </div>
+        </div>
+        <div class="actions">
+          <a class="btn btn--secondary" data-cfg-href="MAP_URL" rel="noopener">Открыть на карте</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--white" id="contact" aria-labelledby="contactTitle">
+      <div class="container">
+        <h2 id="contactTitle">Связаться</h2>
+        <p class="section__lead">Мы не всегда успеваем отвечать в WhatsApp сразу — большинство ответов уже есть в разделе «Вопросы и ответы».</p>
+        <div class="actions">
+          <a class="btn btn--wa" data-wa-greeting="Здравствуйте! У меня вопрос." hidden>Написать в WhatsApp</a>
+          <a class="btn btn--secondary" href="faq.html">Вопросы и ответы</a>
+          <a class="btn btn--secondary" data-cfg-href="INSTAGRAM_URL" rel="noopener">Instagram</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <nav aria-label="Ссылки">
+        <a href="order.html">Предзаказ</a>
+        <a href="faq.html">Вопросы и ответы</a>
+        <a href="privacy.html">Конфиденциальность</a>
+      </nav>
+      <p>© <span data-year></span> <span data-cfg="BRAND">Fryday</span></p>
+    </div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/menu.js"></script>
+  <script src="js/landing.js"></script>
+</body>
+</html>

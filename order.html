@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Предзаказ — Fryday</title>
+  <meta name="description" content="Соберите заказ, выберите время и заберите без очереди.">
+  <meta name="theme-color" content="#E51D25">
+  <!-- Link preview in WhatsApp. After deploy, replace with the absolute URL, e.g. https://fryday.pages.dev/img/brand/logo-512.png -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Предзаказ — Fryday">
+  <meta property="og:description" content="Картофель с сыром и хот-доги. Выберите время — заберёте без очереди.">
+  <meta property="og:image" content="img/brand/logo-512.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="img/brand/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="img/brand/favicon-64.png">
+  <link rel="apple-touch-icon" href="img/brand/apple-touch-icon.png">
+  <link rel="preconnect" href="https://challenges.cloudflare.com">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="order-page">
+
+  <div id="app">
+    <header class="topbar">
+      <div class="container topbar__row">
+        <a class="brand" href="index.html">
+          <img src="img/brand/logo-192.png" width="192" height="192" alt="">
+          <span data-brand>Fryday</span>
+        </a>
+        <a class="topbar__link" href="faq.html">Вопросы</a>
+      </div>
+    </header>
+
+    <div id="orderView">
+      <nav class="chips" id="chips" aria-label="Разделы меню" hidden>
+        <div class="chips__row" id="chipsRow"></div>
+      </nav>
+
+      <main class="container" id="menuMain">
+        <h1 class="visually-hidden">Предзаказ</h1>
+        <div id="closedBanner" class="banner-closed" role="status" hidden></div>
+        <div id="menuNotice" class="notice" role="status" hidden></div>
+        <div id="menuRoot" aria-live="polite">
+          <div class="state-box">
+            <div class="spinner spinner--dark" aria-hidden="true"></div>
+            Загружаем меню…
+          </div>
+        </div>
+      </main>
+
+      <div class="cartbar" id="cartBar" hidden>
+        <button class="cartbar__btn" type="button" id="cartBarBtn" aria-haspopup="dialog" aria-controls="cartSheet">
+          <span id="cartBarCount">Корзина</span>
+          <span class="pill" id="cartBarTotal">0с</span>
+        </button>
+      </div>
+    </div>
+
+    <section id="confirmView" class="confirm" tabindex="-1" aria-labelledby="confirmTitle" hidden></section>
+  </div>
+
+  <!-- Item sheet -->
+  <div class="sheet" id="itemSheet" role="dialog" aria-modal="true" aria-labelledby="itemSheetTitle" hidden>
+    <div class="sheet__backdrop" data-close></div>
+    <div class="sheet__panel" tabindex="-1">
+      <div class="sheet__head">
+        <h2 id="itemSheetTitle">Блюдо</h2>
+        <button class="sheet__close" type="button" data-close aria-label="Закрыть">×</button>
+      </div>
+      <div class="sheet__body" id="itemSheetBody"></div>
+      <div class="sheet__foot" id="itemSheetFoot"></div>
+    </div>
+  </div>
+
+  <!-- Cart sheet -->
+  <div class="sheet" id="cartSheet" role="dialog" aria-modal="true" aria-labelledby="cartSheetTitle" hidden>
+    <div class="sheet__backdrop" data-close></div>
+    <div class="sheet__panel" tabindex="-1">
+      <div class="sheet__head">
+        <h2 id="cartSheetTitle">Ваш заказ</h2>
+        <button class="sheet__close" type="button" data-close aria-label="Закрыть">×</button>
+      </div>
+      <div class="sheet__body" id="cartSheetBody"></div>
+      <div class="sheet__foot" id="cartSheetFoot"></div>
+    </div>
+  </div>
+
+  <!-- Checkout sheet -->
+  <div class="sheet" id="checkoutSheet" role="dialog" aria-modal="true" aria-labelledby="checkoutSheetTitle" hidden>
+    <div class="sheet__backdrop" data-close></div>
+    <div class="sheet__panel" tabindex="-1">
+      <div class="sheet__head">
+        <h2 id="checkoutSheetTitle">Оформление</h2>
+        <button class="sheet__close" type="button" data-close aria-label="Закрыть">×</button>
+      </div>
+      <form id="checkoutForm" novalidate>
+        <div class="sheet__body">
+          <p class="summary-line" id="checkoutSummary"></p>
+
+          <div class="field" id="fName">
+            <label for="name">Имя</label>
+            <input type="text" id="name" name="name" autocomplete="given-name" maxlength="50" required aria-describedby="nameErr">
+            <div class="field__error" id="nameErr" hidden></div>
+          </div>
+
+          <div class="field" id="fPhone">
+            <label for="phone">Телефон</label>
+            <input type="tel" id="phone" name="phone" inputmode="tel" autocomplete="tel" placeholder="+996 700 123 456" maxlength="20" required aria-describedby="phoneHint phoneErr">
+            <div class="field__hint" id="phoneHint">Номер, с которого вы отправите заказ в WhatsApp</div>
+            <div class="field__error" id="phoneErr" hidden></div>
+          </div>
+
+          <div class="field" id="fTime">
+            <label for="readyAt">Время готовности</label>
+            <select id="readyAt" name="readyAt" required aria-describedby="timeErr"></select>
+            <div class="field__error" id="timeErr" hidden></div>
+          </div>
+
+          <div class="field">
+            <label for="comment">Комментарий <span class="muted">(необязательно)</span></label>
+            <textarea id="comment" name="comment" maxlength="200" rows="2" placeholder="Например: без лука"></textarea>
+          </div>
+
+          <div class="field" id="fConsent">
+            <label class="consent">
+              <input type="checkbox" id="consent" name="consent" required aria-describedby="consentErr">
+              <span>Согласен(на) на обработку имени и телефона для выдачи заказа. <a href="privacy.html">Политика конфиденциальности</a></span>
+            </label>
+            <div class="field__error" id="consentErr" hidden></div>
+          </div>
+
+          <!-- Honeypot: must stay empty. Hidden from people and screen readers. -->
+          <div class="hp" aria-hidden="true">
+            <label for="website">Сайт</label>
+            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" value="">
+          </div>
+
+          <div class="ts-box" id="turnstileBox"></div>
+        </div>
+
+        <div class="sheet__foot">
+          <div class="form-error" id="formError" role="alert" hidden></div>
+          <button class="btn btn--primary btn--block btn--lg" type="submit" id="submitBtn">
+            <span class="spinner" id="submitSpinner" aria-hidden="true" hidden></span>
+            <span id="submitLabel">Оформить заказ</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <noscript>
+    <div class="container"><div class="state-box">Для заказа включите JavaScript в браузере.</div></div>
+  </noscript>
+
+  <script src="js/config.js"></script>
+  <script src="js/menu.js"></script>
+  <script src="js/order.js"></script>
+  <!-- Cloudflare Turnstile (the only allowed external script). Rendered explicitly by order.js. -->
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=frydayTurnstileReady" async defer></script>
+</body>
+</html>

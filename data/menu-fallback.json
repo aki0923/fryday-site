@@ -1,0 +1,305 @@
+{
+  "ok": true,
+  "updatedAt": "2026-11-06T00:00:00Z",
+  "open": true,
+  "hours": {
+    "open": "11:00",
+    "close": "23:00",
+    "tz": "Asia/Bishkek"
+  },
+  "leadMinutes": 20,
+  "slotMinutes": 15,
+  "maxDaysAhead": 1,
+  "waPhone": "",
+  "categories": [
+    {
+      "id": "fries",
+      "title": "Картофель",
+      "order": 1
+    },
+    {
+      "id": "hotdogs",
+      "title": "Хот-доги",
+      "order": 2,
+      "subtitle": "Наш хот-дог сделает твой день сочнее!"
+    }
+  ],
+  "items": [
+    {
+      "id": "fries_classic",
+      "category": "fries",
+      "title": "Классический Чиз",
+      "description": "Золотистый картофель со специями и с сыром пармезан",
+      "price": 319,
+      "available": true,
+      "order": 1,
+      "photo": ""
+    },
+    {
+      "id": "fries_double",
+      "category": "fries",
+      "title": "Дабл Чиз",
+      "description": "Золотистый картофель с сырным соусом и с сыром пармезан",
+      "price": 349,
+      "available": true,
+      "order": 2,
+      "photo": ""
+    },
+    {
+      "id": "fries_ketchup",
+      "category": "fries",
+      "title": "Кетчуп Чиз",
+      "description": "Золотистый картофель с томатным соусом и с сыром пармезан",
+      "price": 349,
+      "available": true,
+      "order": 3,
+      "photo": ""
+    },
+    {
+      "id": "fries_pesto",
+      "category": "fries",
+      "title": "Песто Чиз",
+      "description": "Золотистый картофель с соусом песто и с сыром пармезан",
+      "price": 349,
+      "available": true,
+      "order": 4,
+      "photo": ""
+    },
+    {
+      "id": "fries_sesame",
+      "category": "fries",
+      "title": "Кунжутный Чиз",
+      "description": "Золотистый картофель с кунжутным соусом и с сыром пармезан",
+      "price": 349,
+      "available": true,
+      "order": 5,
+      "photo": ""
+    },
+    {
+      "id": "fries_bbq",
+      "category": "fries",
+      "title": "Барбекю Чиз",
+      "description": "Золотистый картофель с соусом барбекю и с сыром пармезан",
+      "price": 349,
+      "available": true,
+      "order": 6,
+      "photo": ""
+    },
+    {
+      "id": "fries_garlic",
+      "category": "fries",
+      "title": "Чесночный Чиз",
+      "description": "Золотистый картофель с чесночным соусом и с сыром пармезан",
+      "price": 349,
+      "available": true,
+      "order": 7,
+      "photo": ""
+    },
+    {
+      "id": "fries_truffle",
+      "category": "fries",
+      "title": "Трюфельный Чиз",
+      "description": "Золотистый картофель с трюфельным соусом и с сыром пармезан",
+      "price": 349,
+      "available": true,
+      "order": 8,
+      "photo": ""
+    },
+    {
+      "id": "fries_chili",
+      "category": "fries",
+      "title": "Чили Чиз",
+      "description": "Золотистый картофель с соусом чили и с сыром пармезан",
+      "price": 349,
+      "available": true,
+      "order": 9,
+      "photo": ""
+    },
+    {
+      "id": "fries_nut",
+      "category": "fries",
+      "title": "Ореховый Чиз",
+      "description": "Золотистый картофель с ореховым соусом и с сыром пармезан",
+      "price": 349,
+      "available": true,
+      "order": 10,
+      "photo": ""
+    },
+    {
+      "id": "hotdog_chicken",
+      "category": "hotdogs",
+      "title": "Fry Dog с куриной сосиской",
+      "description": "Сочный гриль-дог в мягкой булочке, аппетитная румяная куриная сосиска, хрустящие маринованные огурчики, пикантные соусы и щедрая порция золотистого жареного лука.",
+      "price": 359,
+      "available": true,
+      "order": 1,
+      "photo": ""
+    },
+    {
+      "id": "hotdog_beef",
+      "category": "hotdogs",
+      "title": "Fry Dog с говяжьей сосиской",
+      "description": "Сочный гриль-дог в мягкой булочке, аппетитная румяная говяжья сосиска, хрустящие маринованные огурчики, пикантные соусы и щедрая порция золотистого жареного лука.",
+      "price": 359,
+      "available": true,
+      "order": 2,
+      "photo": ""
+    }
+  ],
+  "options": [
+    {
+      "id": "top_fried_onion",
+      "kind": "топпинг",
+      "title": "Жареный лук",
+      "price": 30,
+      "appliesTo": [
+        "fries_classic",
+        "fries_double",
+        "fries_ketchup",
+        "fries_pesto",
+        "fries_sesame",
+        "fries_bbq",
+        "fries_garlic",
+        "fries_truffle",
+        "fries_chili",
+        "fries_nut",
+        "hotdog_chicken",
+        "hotdog_beef"
+      ],
+      "available": true,
+      "order": 1
+    },
+    {
+      "id": "top_jalapeno",
+      "kind": "топпинг",
+      "title": "Халапеньо",
+      "price": 30,
+      "appliesTo": [
+        "fries_classic",
+        "fries_double",
+        "fries_ketchup",
+        "fries_pesto",
+        "fries_sesame",
+        "fries_bbq",
+        "fries_garlic",
+        "fries_truffle",
+        "fries_chili",
+        "fries_nut",
+        "hotdog_chicken",
+        "hotdog_beef"
+      ],
+      "available": true,
+      "order": 2
+    },
+    {
+      "id": "top_pickles",
+      "kind": "топпинг",
+      "title": "Солёные огурцы",
+      "price": 30,
+      "appliesTo": [
+        "fries_classic",
+        "fries_double",
+        "fries_ketchup",
+        "fries_pesto",
+        "fries_sesame",
+        "fries_bbq",
+        "fries_garlic",
+        "fries_truffle",
+        "fries_chili",
+        "fries_nut",
+        "hotdog_chicken",
+        "hotdog_beef"
+      ],
+      "available": true,
+      "order": 3
+    },
+    {
+      "id": "top_parmesan",
+      "kind": "топпинг",
+      "title": "Сыр пармезан",
+      "price": 30,
+      "appliesTo": [
+        "fries_classic",
+        "fries_double",
+        "fries_ketchup",
+        "fries_pesto",
+        "fries_sesame",
+        "fries_bbq",
+        "fries_garlic",
+        "fries_truffle",
+        "fries_chili",
+        "fries_nut",
+        "hotdog_chicken",
+        "hotdog_beef"
+      ],
+      "available": true,
+      "order": 4
+    },
+    {
+      "id": "top_chili",
+      "kind": "топпинг",
+      "title": "Перец чили",
+      "price": 30,
+      "appliesTo": [
+        "fries_classic",
+        "fries_double",
+        "fries_ketchup",
+        "fries_pesto",
+        "fries_sesame",
+        "fries_bbq",
+        "fries_garlic",
+        "fries_truffle",
+        "fries_chili",
+        "fries_nut",
+        "hotdog_chicken",
+        "hotdog_beef"
+      ],
+      "available": true,
+      "order": 5
+    },
+    {
+      "id": "top_red_onion",
+      "kind": "топпинг",
+      "title": "Красный лук",
+      "price": 30,
+      "appliesTo": [
+        "fries_classic",
+        "fries_double",
+        "fries_ketchup",
+        "fries_pesto",
+        "fries_sesame",
+        "fries_bbq",
+        "fries_garlic",
+        "fries_truffle",
+        "fries_chili",
+        "fries_nut",
+        "hotdog_chicken",
+        "hotdog_beef"
+      ],
+      "available": true,
+      "order": 6
+    },
+    {
+      "id": "top_olives",
+      "kind": "топпинг",
+      "title": "Оливки",
+      "price": 30,
+      "appliesTo": [
+        "fries_classic",
+        "fries_double",
+        "fries_ketchup",
+        "fries_pesto",
+        "fries_sesame",
+        "fries_bbq",
+        "fries_garlic",
+        "fries_truffle",
+        "fries_chili",
+        "fries_nut",
+        "hotdog_chicken",
+        "hotdog_beef"
+      ],
+      "available": true,
+      "order": 7
+    }
+  ]
+}
