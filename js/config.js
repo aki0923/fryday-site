@@ -11,7 +11,7 @@ window.FRYDAY_CONFIG = {
   // Cloudflare dashboard → Turnstile → Add widget (Managed) → "Site Key".
   // Add your Pages domain (e.g. fryday.pages.dev) to the widget's hostname list.
   // The SECRET key goes into Apps Script, never here.
-  TURNSTILE_SITE_KEY: "ВСТАВЬТЕ_СЮДА",
+  TURNSTILE_SITE_KEY: "0x4AAAAAAF3cnXgYgwhY9-L1",
 
   // WhatsApp number for the "Написать в WhatsApp" button: digits only, no "+", no spaces.
   // Example: 996705515151. Must be the same number that receives orders.
