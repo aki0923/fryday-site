@@ -28,7 +28,8 @@
     itemsById: {},
     optionsById: {},
     cart: null,
-    slots: [],
+    slots: [],      // times on the minute-button grid (TIME_STEP_MINUTES)
+    asap: null,     // today's «как можно скорее» time, or null when today is over
     submitting: false,
     sheet: null,
     sheetSeq: 0,
@@ -151,10 +152,11 @@
 
   // VERIFY: last slot is strictly before closing time (23:00 close → last slot 22:45).
   // The backend must use the same rule or it will answer invalid_time for the last slot.
-  function buildSlots(menu) {
+  // step / lead default to the backend's slotMinutes / leadMinutes.
+  function buildSlots(menu, step, lead) {
     var nowW = wallNow(menu);
-    var earliest = nowW + menu.leadMinutes;
-    var step = menu.slotMinutes;
+    var earliest = nowW + (lead === undefined ? menu.leadMinutes : lead);
+    step = step || menu.slotMinutes;
     var openM = F.hm(menu.hours.open);
     var closeM = F.hm(menu.hours.close);
     if (openM === null || closeM === null) return [];
@@ -172,6 +174,29 @@
     }
     return out;
   }
+
+  function cfgMinutes(key) {
+    var n = parseInt(F.cfg(key), 10);
+    return isNaN(n) || n <= 0 ? null : n;
+  }
+
+  // «Как можно скорее» = now + ASAP_MINUTES (config.js), rounded up to the backend's grid.
+  // Never sooner than the backend's leadMinutes, or it would refuse the order.
+  function asapLead(menu) {
+    return Math.max(menu.leadMinutes, cfgMinutes('ASAP_MINUTES') || menu.leadMinutes);
+  }
+
+  // Step of the minute buttons (config TIME_STEP_MINUTES, e.g. 20 → :00 :20 :40).
+  // It must sit on the backend's grid (slotMinutes), otherwise the backend's own step is used.
+  function pickStep(menu) {
+    var s = cfgMinutes('TIME_STEP_MINUTES') || menu.slotMinutes;
+    return s % menu.slotMinutes === 0 ? s : menu.slotMinutes;
+  }
+
+  function hasAnyTime() { return state.slots.length > 0 || state.asap !== null; }
+
+  // Every value the hidden #readyAt may hold right now.
+  function allowedTimes() { return state.asap !== null ? state.slots.concat([state.asap]) : state.slots; }
 
   function toReadyAt(t) {
     var d = new Date(t * 60000);
@@ -262,7 +287,9 @@
     var out = [];
     for (var i = 0; i <= n; i++) {
       var ds = start + i * 1440;
-      out.push({ start: ds, index: i, slots: state.slots.filter(function (t) { return dayOf(t) === ds; }) });
+      var slots = state.slots.filter(function (t) { return dayOf(t) === ds; });
+      // A day can be booked if it has minute-grid times, or (today) an «as soon as possible» time.
+      out.push({ start: ds, index: i, slots: slots, open: slots.length > 0 || (i === 0 && state.asap !== null) });
     }
     return out;
   }
@@ -272,7 +299,7 @@
     var m = state.menu;
     var openM = F.hm(m.hours.open);
     var closeM = F.hm(m.hours.close);
-    var step = m.slotMinutes;
+    var step = pickStep(m);
     var grid = [];
     if (openM !== null && closeM !== null && closeM > openM) {
       for (var t = Math.ceil((day.start + openM) / step) * step; t < day.start + closeM; t += step) grid.push(t);
@@ -293,7 +320,7 @@
   }
 
   function pickDay(day) {
-    if (day.index === 0 && day.slots.length) setTime('asap', day.start, day.slots[0]);
+    if (day.index === 0 && state.asap !== null) setTime('asap', day.start, state.asap);
     else setTime(null, day.start, null);
     afterPick();
   }
@@ -323,8 +350,8 @@
   }
 
   function renderTimePicker() {
-    var days = state.menu && state.slots.length ? tpDays() : [];
-    var bookable = days.filter(function (d) { return d.slots.length; });
+    var days = state.menu && hasAnyTime() ? tpDays() : [];
+    var bookable = days.filter(function (d) { return d.open; });
     tpDom.days.textContent = '';
     tpDom.hours.textContent = '';
     tpDom.mins.textContent = '';
@@ -341,13 +368,13 @@
     }
 
     var today = days[0];
-    var current = days.filter(function (d) { return d.start === tp.day && d.slots.length; })[0] || bookable[0];
+    var current = days.filter(function (d) { return d.start === tp.day && d.open; })[0] || bookable[0];
 
     // Days
     tpDom.days.hidden = false;
     tpDom.days.style.gridTemplateColumns = 'repeat(' + Math.min(days.length, 3) + ', minmax(0, 1fr))';
     days.forEach(function (d) {
-      var off = !d.slots.length;
+      var off = !d.open;
       var word = dayWord(d.start);
       var sub = off ? (d.index === 0 ? 'уже не успеем' : 'нет времени') : (d.index < 2 ? dayDate(d.start) : WEEKDAYS[new Date(d.start * 60000).getUTCDay()]);
       tpDom.days.appendChild(tpButton('tp-day', [
@@ -356,15 +383,15 @@
       ], d.start === current.start, off, function () { pickDay(d); }));
     });
 
-    tpDom.closed.hidden = today.slots.length > 0;
-    tpDom.closed.textContent = 'Сегодня уже не успеем приготовить — выберите время на ' + (days[1] && days[1].slots.length ? 'завтра' : 'другой день') + '.';
+    tpDom.closed.hidden = today.open;
+    tpDom.closed.textContent = 'Сегодня уже не успеем приготовить — выберите время на ' + (days[1] && days[1].open ? 'завтра' : 'другой день') + '.';
 
     // As soon as possible (today only)
-    var showAsap = current.index === 0 && today.slots.length > 0;
+    var showAsap = current.index === 0 && state.asap !== null;
     tpDom.asap.hidden = !showAsap;
     tpDom.or.hidden = !showAsap;
     if (showAsap) {
-      var first = today.slots[0];
+      var first = state.asap;
       tpDom.asap.setAttribute('aria-pressed', tp.mode === 'asap' ? 'true' : 'false');
       tpDom.asapSub.textContent = 'будет готово к ' + hhmm(first) + ' · через ' + inMinutes(first - nowWall());
     }
@@ -401,9 +428,8 @@
   }
 
   tpDom.asap.addEventListener('click', function () {
-    var today = tpDays()[0];
-    if (!today.slots.length) return;
-    setTime('asap', today.start, today.slots[0]);
+    if (state.asap === null) return;
+    setTime('asap', dayOf(state.asap), state.asap);
     afterPick();
   });
 
@@ -1181,9 +1207,14 @@
   function rebuildSlots(keepSelection) {
     var prev = keepSelection ? dom.readyAt.value : '';
     var prevT = fromReadyAt(prev);
-    state.slots = state.menu ? buildSlots(state.menu) : [];
+    var m = state.menu;
+    // Minute buttons: TIME_STEP_MINUTES grid, never sooner than «как можно скорее».
+    state.slots = m ? buildSlots(m, pickStep(m), asapLead(m)) : [];
+    // «Как можно скорее»: the first time on the backend's own grid, today only.
+    var fastest = m ? buildSlots(m, m.slotMinutes, asapLead(m)) : [];
+    state.asap = fastest.length && dayOf(fastest[0]) === dayOf(wallNow(m)) ? fastest[0] : null;
 
-    if (!state.slots.length) {
+    if (!hasAnyTime()) {
       setTime(null, null, null);
       renderTimePicker();
       setFieldError('fTime', 'timeErr', NO_SLOTS_MSG);
@@ -1193,14 +1224,14 @@
 
     var days = tpDays();
     var today = days[0];
-    var bookable = days.filter(function (d) { return d.slots.length; });
+    var bookable = days.filter(function (d) { return d.open; });
 
-    if (keepSelection && tp.mode === 'asap' && today.slots.length) {
-      setTime('asap', today.start, today.slots[0]);          // "as soon as possible" moves with the clock
+    if (keepSelection && tp.mode === 'asap' && state.asap !== null) {
+      setTime('asap', today.start, state.asap);              // "as soon as possible" moves with the clock
     } else if (keepSelection && tp.mode === 'exact' && prevT !== null && state.slots.indexOf(prevT) !== -1) {
       setTime('exact', dayOf(prevT), prevT);                  // a picked time that is still bookable stays
-    } else if (today.slots.length) {
-      setTime('asap', today.start, today.slots[0]);          // default: as soon as possible
+    } else if (state.asap !== null) {
+      setTime('asap', today.start, state.asap);              // default: as soon as possible
     } else {
       var keepDay = keepSelection && bookable.some(function (d) { return d.start === tp.day; });
       setTime(null, keepDay ? tp.day : bookable[0].start, null);  // closed for today: the person picks a time
@@ -1223,7 +1254,7 @@
 
   function updateSubmitState() {
     if (state.submitting) return;
-    var blocked = !state.menu || !state.menu.open || !state.slots.length || !state.cart.lines.length || cartHasProblems();
+    var blocked = !state.menu || !state.menu.open || !hasAnyTime() || !state.cart.lines.length || cartHasProblems();
     dom.submitBtn.disabled = blocked;
   }
 
@@ -1263,13 +1294,13 @@
     }
     if (tp.mode === 'asap') rebuildSlots(true); // the earliest slot may have moved since the form opened
     var readyAt = dom.readyAt.value;
-    var valid = state.slots.map(toReadyAt);
+    var valid = allowedTimes().map(toReadyAt);
     if (!readyAt) {
-      if (state.slots.length) setFieldError('fTime', 'timeErr', 'Выберите время готовности.');
+      if (hasAnyTime()) setFieldError('fTime', 'timeErr', 'Выберите время готовности.');
       firstBad = firstBad || { focus: focusTimePicker };
     } else if (valid.indexOf(readyAt) === -1) {
       rebuildSlots(false);
-      if (state.slots.length) setFieldError('fTime', 'timeErr', 'Это время уже прошло — выберите другое.');
+      if (hasAnyTime()) setFieldError('fTime', 'timeErr', 'Это время уже прошло — выберите другое.');
       firstBad = firstBad || { focus: focusTimePicker };
     }
     if (!dom.consent.checked) {
@@ -1494,7 +1525,7 @@
         state.invalidTimeCount++;
         await refreshMenu(true);
         rebuildSlots(false);
-        if (state.slots.length) {
+        if (hasAnyTime()) {
           setFieldError('fTime', 'timeErr', state.invalidTimeCount > 1
             ? 'Это время снова недоступно. Проверьте, что на телефоне верные дата и время, и выберите время ещё раз.'
             : 'Это время уже недоступно. Выберите другое и нажмите «Оформить заказ» ещё раз.');

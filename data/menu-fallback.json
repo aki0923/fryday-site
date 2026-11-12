@@ -7,8 +7,8 @@
     "close": "22:00",
     "tz": "Asia/Bishkek"
   },
-  "leadMinutes": 20,
-  "slotMinutes": 15,
+  "leadMinutes": 15,
+  "slotMinutes": 5,
   "maxDaysAhead": 1,
   "waPhone": "",
   "categories": [

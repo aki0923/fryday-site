@@ -34,5 +34,14 @@ window.FRYDAY_CONFIG = {
   INSTAGRAM_URL: "https://www.instagram.com/fry_daykg/",
 
   // Map link: open the place in 2GIS or Google Maps → Share → copy link.
-  MAP_URL: "https://go.2gis.com/cloTG"
+  MAP_URL: "https://go.2gis.com/cloTG",
+
+  // «Как можно скорее»: через сколько минут от текущего времени заказ будет готов.
+  // 20 → в 18:25 клиент увидит «к 18:45». Время округляется вверх по сетке сервера
+  // (SLOT_MINUTES в Apps Script, файл настройки.gs) и не бывает раньше, чем позволяет сервер (LEAD_MINUTES).
+  ASAP_MINUTES: 20,
+
+  // Шаг кнопок с минутами, когда клиент выбирает час: 20 → :00, :20, :40.
+  // Должен делиться на SLOT_MINUTES из Apps Script, иначе сайт возьмёт шаг сервера.
+  TIME_STEP_MINUTES: 20
 };
