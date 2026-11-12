@@ -203,6 +203,221 @@
   }
 
   /* =====================================================================
+   * Time picker: day → "as soon as possible", or hour → minute.
+   * The slots themselves still come from buildSlots(); the picker only
+   * writes the chosen one into the hidden #readyAt input, so validation
+   * and the order request keep their exact format.
+   * ===================================================================== */
+
+  var WEEKDAYS = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
+
+  // mode: 'asap' follows the earliest slot as the clock moves; 'exact' is a time the person picked.
+  var tp = { mode: null, day: null, value: null };
+
+  var tpDom = {
+    field: $('fTime'),
+    days: $('tpDays'),
+    closed: $('tpClosed'),
+    asap: $('tpAsap'),
+    asapSub: $('tpAsapSub'),
+    or: $('tpOr'),
+    hoursWrap: $('tpHoursWrap'),
+    hours: $('tpHours'),
+    minsWrap: $('tpMinsWrap'),
+    mins: $('tpMins'),
+    summary: $('tpSummary'),
+    summaryText: $('tpSummaryText')
+  };
+
+  function dayOf(t) { return Math.floor(t / 1440) * 1440; }
+  function hourOf(t) { return Math.floor((t - dayOf(t)) / 60); }
+  function hhmm(t) { var d = new Date(t * 60000); return pad(d.getUTCHours()) + ':' + pad(d.getUTCMinutes()); }
+  function nowWall() { return state.menu ? wallNow(state.menu) : Date.now() / 60000; }
+
+  function dayWord(dayStart) {
+    var diff = Math.round((dayStart - dayOf(nowWall())) / 1440);
+    if (diff === 0) return 'сегодня';
+    if (diff === 1) return 'завтра';
+    if (diff === 2) return 'послезавтра';
+    var d = new Date(dayStart * 60000);
+    return d.getUTCDate() + ' ' + MONTHS[d.getUTCMonth()];
+  }
+
+  function dayDate(dayStart) {
+    var d = new Date(dayStart * 60000);
+    return WEEKDAYS[d.getUTCDay()] + ', ' + d.getUTCDate() + ' ' + MONTHS[d.getUTCMonth()];
+  }
+
+  function inMinutes(min) {
+    min = Math.max(1, Math.round(min));
+    if (min < 60) return min + ' мин';
+    var h = Math.floor(min / 60), m = min % 60;
+    return h + ' ч' + (m ? ' ' + m + ' мин' : '');
+  }
+
+  // Today plus maxDaysAhead days, each with its bookable slots.
+  function tpDays() {
+    var start = dayOf(nowWall());
+    var n = state.menu ? state.menu.maxDaysAhead : 0;
+    var out = [];
+    for (var i = 0; i <= n; i++) {
+      var ds = start + i * 1440;
+      out.push({ start: ds, index: i, slots: state.slots.filter(function (t) { return dayOf(t) === ds; }) });
+    }
+    return out;
+  }
+
+  // Every slot of that day's opening hours, so past hours can be shown greyed out.
+  function dayGrid(day) {
+    var m = state.menu;
+    var openM = F.hm(m.hours.open);
+    var closeM = F.hm(m.hours.close);
+    var step = m.slotMinutes;
+    var grid = [];
+    if (openM !== null && closeM !== null && closeM > openM) {
+      for (var t = Math.ceil((day.start + openM) / step) * step; t < day.start + closeM; t += step) grid.push(t);
+    }
+    day.slots.forEach(function (t) { if (grid.indexOf(t) === -1) grid.push(t); });
+    grid.sort(function (a, b) { return a - b; });
+    return grid;
+  }
+
+  function setTime(mode, day, t) {
+    tp = { mode: mode, day: day, value: t };
+    dom.readyAt.value = t === null ? '' : toReadyAt(t);
+  }
+
+  function afterPick() {
+    clearFieldError('fTime', 'timeErr');
+    renderTimePicker();
+  }
+
+  function pickDay(day) {
+    if (day.index === 0 && day.slots.length) setTime('asap', day.start, day.slots[0]);
+    else setTime(null, day.start, null);
+    afterPick();
+  }
+
+  function pickHour(day, h) {
+    var first = day.slots.filter(function (t) { return hourOf(t) === h; })[0];
+    if (first === undefined) return;
+    setTime('exact', day.start, first);
+    afterPick();
+  }
+
+  function pickMinute(day, t) {
+    setTime('exact', day.start, t);
+    afterPick();
+  }
+
+  function tpButton(cls, label, pressed, disabled, onClick, aria) {
+    var b = el('button', {
+      type: 'button',
+      class: 'tp-btn ' + cls,
+      'aria-pressed': pressed ? 'true' : 'false',
+      'aria-label': aria || null,
+      disabled: !!disabled
+    }, label);
+    if (!disabled) b.addEventListener('click', onClick);
+    return b;
+  }
+
+  function renderTimePicker() {
+    var days = state.menu && state.slots.length ? tpDays() : [];
+    var bookable = days.filter(function (d) { return d.slots.length; });
+    tpDom.days.textContent = '';
+    tpDom.hours.textContent = '';
+    tpDom.mins.textContent = '';
+
+    if (!bookable.length) {
+      tpDom.days.hidden = true;
+      tpDom.closed.hidden = true;
+      tpDom.asap.hidden = true;
+      tpDom.or.hidden = true;
+      tpDom.hoursWrap.hidden = true;
+      tpDom.minsWrap.hidden = true;
+      tpDom.summary.hidden = true;
+      return;
+    }
+
+    var today = days[0];
+    var current = days.filter(function (d) { return d.start === tp.day && d.slots.length; })[0] || bookable[0];
+
+    // Days
+    tpDom.days.hidden = false;
+    tpDom.days.style.gridTemplateColumns = 'repeat(' + Math.min(days.length, 3) + ', minmax(0, 1fr))';
+    days.forEach(function (d) {
+      var off = !d.slots.length;
+      var word = dayWord(d.start);
+      var sub = off ? (d.index === 0 ? 'уже не успеем' : 'нет времени') : (d.index < 2 ? dayDate(d.start) : WEEKDAYS[new Date(d.start * 60000).getUTCDay()]);
+      tpDom.days.appendChild(tpButton('tp-day', [
+        el('span', { class: 'tp-day__name' }, word.charAt(0).toUpperCase() + word.slice(1)),
+        el('span', { class: 'tp-day__sub' }, sub)
+      ], d.start === current.start, off, function () { pickDay(d); }));
+    });
+
+    tpDom.closed.hidden = today.slots.length > 0;
+    tpDom.closed.textContent = 'Сегодня уже не успеем приготовить — выберите время на ' + (days[1] && days[1].slots.length ? 'завтра' : 'другой день') + '.';
+
+    // As soon as possible (today only)
+    var showAsap = current.index === 0 && today.slots.length > 0;
+    tpDom.asap.hidden = !showAsap;
+    tpDom.or.hidden = !showAsap;
+    if (showAsap) {
+      var first = today.slots[0];
+      tpDom.asap.setAttribute('aria-pressed', tp.mode === 'asap' ? 'true' : 'false');
+      tpDom.asapSub.textContent = 'будет готово к ' + hhmm(first) + ' · через ' + inMinutes(first - nowWall());
+    }
+
+    // Hours
+    var grid = dayGrid(current);
+    var hours = [];
+    grid.forEach(function (t) { var h = hourOf(t); if (hours.indexOf(h) === -1) hours.push(h); });
+    var chosenHour = tp.mode === 'exact' && tp.value !== null && dayOf(tp.value) === current.start ? hourOf(tp.value) : null;
+    tpDom.hoursWrap.hidden = false;
+    hours.forEach(function (h) {
+      var open = current.slots.some(function (t) { return hourOf(t) === h; });
+      tpDom.hours.appendChild(tpButton('tp-hour', String(h), h === chosenHour, !open,
+        function () { pickHour(current, h); }, 'Час ' + h + (open ? '' : ', время прошло')));
+    });
+
+    // Minutes of the chosen hour
+    tpDom.minsWrap.hidden = chosenHour === null;
+    if (chosenHour !== null) {
+      var inHour = grid.filter(function (t) { return hourOf(t) === chosenHour; });
+      tpDom.mins.style.gridTemplateColumns = 'repeat(' + Math.min(inHour.length, 4) + ', minmax(0, 1fr))';
+      inHour.forEach(function (t) {
+        var ok = current.slots.indexOf(t) !== -1;
+        tpDom.mins.appendChild(tpButton('tp-min', hhmm(t), t === tp.value, !ok, function () { pickMinute(current, t); }));
+      });
+    }
+
+    // Summary
+    tpDom.summary.hidden = false;
+    tpDom.summary.classList.toggle('is-set', tp.value !== null);
+    tpDom.summaryText.textContent = tp.value !== null
+      ? 'Будет готово ' + dayWord(dayOf(tp.value)) + ' к ' + hhmm(tp.value)
+      : 'Выберите час — минуты подставим сами';
+  }
+
+  tpDom.asap.addEventListener('click', function () {
+    var today = tpDays()[0];
+    if (!today.slots.length) return;
+    setTime('asap', today.start, today.slots[0]);
+    afterPick();
+  });
+
+  // Focus the picker after an error: the selected button, else the first one that can be pressed.
+  function focusTimePicker() {
+    var buttons = Array.prototype.filter.call(tpDom.field.querySelectorAll('button'), function (b) {
+      return !b.disabled && b.offsetParent !== null;
+    });
+    var pressed = buttons.filter(function (b) { return b.getAttribute('aria-pressed') === 'true'; });
+    var target = pressed[pressed.length - 1] || buttons[0];
+    if (target) target.focus();
+  }
+
+  /* =====================================================================
    * Cart
    * ===================================================================== */
 
@@ -685,12 +900,16 @@
     return el('div', { class: 'stepper', role: 'group', 'aria-label': opts.label || 'Количество' }, [minus, out, plus]);
   }
 
-  function openItem(itemId) {
+  // presetOpts: topping ids to pre-tick (from a deep link); unknown or unavailable ones are dropped.
+  function openItem(itemId, presetOpts) {
     var item = state.itemsById[itemId];
     if (!item || !item.available) return;
     state.sheetItem = item;
     state.sheetQty = 1;
-    state.sheetOpts = [];
+    var allowed = applicableOptions(item).filter(function (o) { return o.available; }).map(function (o) { return o.id; });
+    state.sheetOpts = (presetOpts || []).filter(function (oid, i, arr) {
+      return allowed.indexOf(oid) !== -1 && arr.indexOf(oid) === i;
+    });
     renderItemSheet();
     openSheet('item');
   }
@@ -916,7 +1135,6 @@
   dom.name.addEventListener('input', function () { clearFieldError('fName', 'nameErr'); saveCustomer(); });
   dom.comment.addEventListener('input', function () { F.session.set(DRAFT_KEY, { comment: dom.comment.value }); });
   dom.consent.addEventListener('change', function () { clearFieldError('fConsent', 'consentErr'); });
-  dom.readyAt.addEventListener('change', function () { clearFieldError('fTime', 'timeErr'); });
 
   function saveCustomer() {
     F.store.set(CUSTOMER_KEY, { name: dom.name.value.trim(), phone: dom.phone.value.trim() });
@@ -958,23 +1176,41 @@
     dom.formError.hidden = true;
   }
 
+  var NO_SLOTS_MSG = 'Сейчас нельзя выбрать время готовности. Загляните позже — в часы работы.';
+
   function rebuildSlots(keepSelection) {
     var prev = keepSelection ? dom.readyAt.value : '';
+    var prevT = fromReadyAt(prev);
     state.slots = state.menu ? buildSlots(state.menu) : [];
-    dom.readyAt.textContent = '';
+
     if (!state.slots.length) {
-      dom.readyAt.appendChild(el('option', { value: '' }, 'Нет доступного времени'));
-      dom.readyAt.disabled = true;
-      setFieldError('fTime', 'timeErr', 'Сейчас нельзя выбрать время готовности. Загляните позже — в часы работы.');
-    } else {
-      dom.readyAt.disabled = false;
-      state.slots.forEach(function (t) {
-        dom.readyAt.appendChild(el('option', { value: toReadyAt(t) }, slotLabel(t)));
-      });
-      var values = state.slots.map(toReadyAt);
-      dom.readyAt.value = prev && values.indexOf(prev) !== -1 ? prev : values[0];
-      if (dom.readyAt.value !== prev && prev) clearFieldError('fTime', 'timeErr');
+      setTime(null, null, null);
+      renderTimePicker();
+      setFieldError('fTime', 'timeErr', NO_SLOTS_MSG);
+      updateSubmitState();
+      return;
     }
+
+    var days = tpDays();
+    var today = days[0];
+    var bookable = days.filter(function (d) { return d.slots.length; });
+
+    if (keepSelection && tp.mode === 'asap' && today.slots.length) {
+      setTime('asap', today.start, today.slots[0]);          // "as soon as possible" moves with the clock
+    } else if (keepSelection && tp.mode === 'exact' && prevT !== null && state.slots.indexOf(prevT) !== -1) {
+      setTime('exact', dayOf(prevT), prevT);                  // a picked time that is still bookable stays
+    } else if (today.slots.length) {
+      setTime('asap', today.start, today.slots[0]);          // default: as soon as possible
+    } else {
+      var keepDay = keepSelection && bookable.some(function (d) { return d.start === tp.day; });
+      setTime(null, keepDay ? tp.day : bookable[0].start, null);  // closed for today: the person picks a time
+    }
+
+    var errBox = $('timeErr');
+    if ((prev && dom.readyAt.value !== prev) || (errBox && errBox.textContent === NO_SLOTS_MSG)) {
+      clearFieldError('fTime', 'timeErr');
+    }
+    renderTimePicker();
     updateSubmitState();
   }
 
@@ -1025,12 +1261,16 @@
       setFieldError('fPhone', 'phoneErr', 'Введите номер в формате +996 XXX XXX XXX.');
       firstBad = firstBad || dom.phone;
     }
+    if (tp.mode === 'asap') rebuildSlots(true); // the earliest slot may have moved since the form opened
     var readyAt = dom.readyAt.value;
     var valid = state.slots.map(toReadyAt);
-    if (!readyAt || valid.indexOf(readyAt) === -1) {
-      rebuildSlots(false);
+    if (!readyAt) {
       if (state.slots.length) setFieldError('fTime', 'timeErr', 'Выберите время готовности.');
-      firstBad = firstBad || dom.readyAt;
+      firstBad = firstBad || { focus: focusTimePicker };
+    } else if (valid.indexOf(readyAt) === -1) {
+      rebuildSlots(false);
+      if (state.slots.length) setFieldError('fTime', 'timeErr', 'Это время уже прошло — выберите другое.');
+      firstBad = firstBad || { focus: focusTimePicker };
     }
     if (!dom.consent.checked) {
       setFieldError('fConsent', 'consentErr', 'Отметьте согласие — без него мы не сможем принять заказ.');
@@ -1257,9 +1497,9 @@
         if (state.slots.length) {
           setFieldError('fTime', 'timeErr', state.invalidTimeCount > 1
             ? 'Это время снова недоступно. Проверьте, что на телефоне верные дата и время, и выберите время ещё раз.'
-            : 'Это время уже недоступно — мы обновили список. Выберите время и нажмите «Оформить заказ» ещё раз.');
+            : 'Это время уже недоступно. Выберите другое и нажмите «Оформить заказ» ещё раз.');
         }
-        dom.readyAt.focus();
+        focusTimePicker();
         return;
 
       case 'invalid_name':
@@ -1443,11 +1683,17 @@
     openSheet('cart');
   });
 
+  // order.html#item=fries_classic&opts=top_parmesan,top_jalapeno → { id, opts }
   function readDeepLink() {
-    var m = /^#item=([^&]+)$/.exec(location.hash || '');
+    var m = /^#item=([^&]+)(?:&opts=([^&]*))?$/.exec(location.hash || '');
     if (!m) return null;
     try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { /* ignore */ }
-    try { return decodeURIComponent(m[1]); } catch (e) { return null; }
+    try {
+      return {
+        id: decodeURIComponent(m[1]),
+        opts: m[2] ? m[2].split(',').map(function (s) { return decodeURIComponent(s); }).filter(Boolean) : []
+      };
+    } catch (e) { return null; }
   }
 
   function restorePlaced() {
@@ -1471,10 +1717,10 @@
     refreshMenu(false).then(function (res) {
       if (!res) return;
       if (restorePlaced()) return;
-      if (deepItem && state.itemsById[deepItem]) {
-        var card = dom.menuRoot.querySelector('[data-item="' + deepItem.replace(/"/g, '') + '"]');
+      if (deepItem && state.itemsById[deepItem.id]) {
+        var card = dom.menuRoot.querySelector('[data-item="' + deepItem.id.replace(/"/g, '') + '"]');
         if (card) card.scrollIntoView({ block: 'center' });
-        openItem(deepItem);
+        openItem(deepItem.id, deepItem.opts);
       }
     });
   }

@@ -3,8 +3,8 @@
   "updatedAt": "2026-11-06T00:00:00Z",
   "open": true,
   "hours": {
-    "open": "11:00",
-    "close": "23:00",
+    "open": "10:00",
+    "close": "22:00",
     "tz": "Asia/Bishkek"
   },
   "leadMinutes": 20,

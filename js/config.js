@@ -21,7 +21,7 @@ window.FRYDAY_CONFIG = {
   BRAND: "Fryday",
 
   // Street address as customers should read it, e.g. "г. Бишкек, ул. Киевская, 95".
-  ADDRESS: "Г. Бишкек проспект Чынгыза Айтматова, 299в, ТРЦ «Ала-Арча»",
+  ADDRESS: "г. Бишкек, пр. Чынгыза Айтматова, 299в, ТРЦ «Ала-Арча»",
 
   // Opening hours as text, e.g. "Ежедневно с 11:00 до 23:00".
   // If left as "ВСТАВЬТЕ_СЮДА", the site builds this text from the hours in the Google Sheet.

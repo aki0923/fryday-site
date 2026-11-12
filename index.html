@@ -4,123 +4,236 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Fryday — картофель с сыром и хот-доги в Бишкеке</title>
-  <meta name="description" content="Fryday: картофель с сыром и соусами и хот-доги Fry Dog. Сделайте предзаказ и заберите без очереди.">
+  <meta name="description" content="Fryday: хрустящий картофель с пармезаном и соусами, хот-доги Fry Dog. Сделайте предзаказ и заберите без очереди в ТРЦ «Ала-Арча».">
   <meta name="theme-color" content="#E51D25">
   <!-- Link preview in WhatsApp. After deploy, replace with the absolute URL, e.g. https://fryday.pages.dev/img/brand/logo-512.png -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Fryday — вкус, который не отпускает">
-  <meta property="og:description" content="Картофель с сыром и хот-доги. Предзаказ онлайн — заберите без очереди.">
+  <meta property="og:description" content="Картофель с пармезаном и хот-доги. Предзаказ онлайн — заберите без очереди.">
   <meta property="og:image" content="img/brand/logo-512.png">
   <link rel="icon" type="image/png" sizes="32x32" href="img/brand/favicon-32.png">
   <link rel="icon" type="image/png" sizes="64x64" href="img/brand/favicon-64.png">
   <link rel="apple-touch-icon" href="img/brand/apple-touch-icon.png">
+  <link rel="preload" href="fonts/rubik-cyrillic-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="img/items/fries_double.webp" as="image" type="image/webp">
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="landing">
 
-  <header class="site-header" id="siteHeader" aria-hidden="true">
-    <div class="container site-header__row">
-      <a class="brand" href="#top" tabindex="-1">
+  <header class="l-header">
+    <div class="l-wrap l-header__row">
+      <a class="brand l-brand" href="#top" aria-label="Fryday — наверх">
         <img src="img/brand/logo-192.png" width="192" height="192" alt="">
         <span data-cfg="BRAND">Fryday</span>
       </a>
-      <a class="btn btn--primary btn--sm" href="order.html" tabindex="-1">Предзаказ</a>
+      <a class="btn btn--primary btn--sm" href="order.html">Предзаказ</a>
     </div>
   </header>
 
   <main id="top">
-    <!-- HERO. Background placeholder: to use a photo, add
-         style="background: url('img/hero.webp') center/cover" to the <section> below
-         and keep the text readable (add a cream overlay). -->
-    <section class="hero" id="hero">
-      <div class="hero__inner">
-        <picture>
-          <source srcset="img/brand/logo-512.webp" type="image/webp">
-          <img class="hero__logo" src="img/brand/logo-512.png" width="512" height="512" alt="Логотип Fryday" fetchpriority="high">
-        </picture>
-        <h1 class="hero__line">Вкус, который не отпускает</h1>
-        <p class="hero__sub">Картофель с сыром и хот-доги. Закажите заранее — заберёте горячим, без очереди.</p>
-        <a class="btn btn--primary btn--lg" href="order.html">Сделать предзаказ</a>
-      </div>
-      <a class="hero__scroll" href="#about">Листайте вниз ↓</a>
-    </section>
 
-    <section class="section section--white" id="about" aria-labelledby="aboutTitle">
-      <div class="container">
-        <h2 id="aboutTitle">О нас</h2>
-        <div class="about">
-          <p>Мы делаем одну вещь и делаем её хорошо: золотистый картофель, который жарим под каждый заказ, щедро посыпаем пармезаном и заливаем соусом на ваш выбор — от сырного и чесночного до трюфельного.</p>
-          <p>А когда хочется чего-то посытнее — берите Fry Dog: гриль-дог в мягкой булочке, румяная сосиска, хрустящие огурчики и жареный лук. Без лишнего, просто очень вкусно.</p>
-          <p>Чтобы не ждать у окошка, оформите предзаказ на сайте: выберите время, и к вашему приходу всё будет готово.</p>
+    <!-- First screen: the food first, then the promise and the order button. -->
+    <section class="l-hero" aria-labelledby="heroTitle">
+      <div class="l-wrap l-hero__row">
+        <div class="l-hero__art">
+          <div class="l-hero__disc" aria-hidden="true"></div>
+          <img class="l-hero__img" src="img/items/fries_double.webp" width="900" height="530"
+               alt="Дабл Чиз — картофель с сырным соусом и пармезаном" fetchpriority="high">
+          <p class="l-sticker"><span>от</span> <strong data-min-price>319с</strong></p>
+        </div>
+        <div class="l-hero__text">
+          <p class="l-tag l-tag--dark">Предзаказ без очереди</p>
+          <h1 class="l-h1" id="heroTitle">Вкус, который <span>не&nbsp;отпускает</span></h1>
+          <p class="l-lead">Хрустящая картошка с пармезаном и <span data-count="sauces-with">10 соусами</span> на выбор, Fry Dog на гриле. Закажи заранее — заберёшь горячим, без очереди.</p>
+          <div class="l-actions">
+            <a class="btn btn--primary btn--lg" href="order.html">
+              Сделать предзаказ
+              <svg class="l-ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+            </a>
+            <a class="btn btn--lg l-btn-outline" href="#sauces">Смотреть меню</a>
+          </div>
+          <ul class="l-facts">
+            <li>
+              <svg class="l-ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+              ТРЦ «Ала-Арча»
+            </li>
+            <li>
+              <svg class="l-ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+              <span data-hours data-hours-fallback="Ежедневно с 10:00 до 22:00">Ежедневно с 10:00 до 22:00</span>
+            </li>
+            <li>
+              <svg class="l-ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/></svg>
+              Оплата в WhatsApp
+            </li>
+          </ul>
         </div>
       </div>
     </section>
 
-    <section class="section" id="menu" aria-labelledby="menuTitle">
-      <div class="container">
-        <h2 id="menuTitle">Меню</h2>
+    <div class="l-ticker" aria-hidden="true">
+      <div class="l-ticker__band">
+        <span>Картошка с пармезаном</span><i>•</i><span data-count="sauces">10 соусов</span><i>•</i><span>Fry Dog</span><i>•</i><span data-count="toppings">7 топпингов</span><i>•</i>
+        <span>Картошка с пармезаном</span><i>•</i><span data-count="sauces">10 соусов</span><i>•</i><span>Fry Dog</span><i>•</i><span data-count="toppings">7 топпингов</span>
+      </div>
+    </div>
+
+    <!-- Sauce switcher: one big photo instead of ten near-identical cards. Filled from the menu by landing.js. -->
+    <section class="l-section l-anchor" id="sauces" aria-labelledby="saucesTitle">
+      <div class="l-wrap">
+        <div class="l-head">
+          <p class="l-tag">Картошка</p>
+          <h2 class="l-h2" id="saucesTitle">Выбери свой соус</h2>
+          <p class="l-lead" id="saucesLead">Хрустящий картофель, щедрая горка пармезана и один из 10 соусов. Классический Чиз — 319с, все остальные — 349с.</p>
+        </div>
         <div id="landingNotice" class="notice" role="status" hidden></div>
-        <div id="landingMenu" aria-live="polite">
-          <div class="state-box">
-            <div class="spinner spinner--dark" aria-hidden="true"></div>
-            Загружаем меню…
+        <div class="l-split" id="sauceBlock">
+          <div class="l-stage">
+            <div class="l-stage__pic" id="sauceTint">
+              <img id="sauceImg" src="img/items/fries_truffle.webp" width="900" height="530" alt="Трюфельный Чиз" loading="lazy">
+            </div>
+            <div class="l-stage__info">
+              <div>
+                <h3 class="l-stage__name" id="sauceName">Трюфельный Чиз</h3>
+                <p class="l-stage__desc" id="sauceDesc">Золотистый картофель с трюфельным соусом и с сыром пармезан</p>
+              </div>
+              <span class="pill pill--lg" id="saucePrice">349с</span>
+            </div>
+            <a class="btn btn--primary btn--lg btn--block" id="sauceOrder" href="order.html#item=fries_truffle">Заказать Трюфельный Чиз</a>
+          </div>
+          <div class="l-chips" id="sauceChips" role="group" aria-label="Соусы"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="l-dog l-anchor" id="dog" aria-labelledby="dogTitle">
+      <div class="l-wrap l-dog__row">
+        <div class="l-dog__art">
+          <img id="dogImg" src="img/items/hotdog_chicken.webp" width="900" height="900" alt="Fry Dog в фирменной коробке" loading="lazy">
+        </div>
+        <div class="l-dog__text">
+          <p class="l-tag">Хот-доги</p>
+          <h2 class="l-dog__title" id="dogTitle">Fry Dog</h2>
+          <p class="l-dog__slogan" id="dogSlogan">Наш хот-дог сделает твой день сочнее!</p>
+          <p class="l-dog__desc">Гриль-дог в мягкой булочке, румяная сосиска, хрустящие маринованные огурчики, пикантные соусы и щедрая порция золотистого жареного лука.</p>
+          <ul class="l-dog__list" id="dogList">
+            <li><a class="l-dog__variant" href="order.html#item=hotdog_chicken"><span>С куриной сосиской</span><span class="pill">359с</span></a></li>
+            <li><a class="l-dog__variant" href="order.html#item=hotdog_beef"><span>С говяжьей сосиской</span><span class="pill">359с</span></a></li>
+          </ul>
+          <a class="btn btn--yellow btn--lg l-self-start" href="order.html">Заказать Fry Dog</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Build-your-box: tap a bowl, the topping lands on the fries, the price grows. Filled by landing.js. -->
+    <section class="l-section l-anchor" id="box" aria-labelledby="boxTitle">
+      <div class="l-wrap">
+        <div class="l-head">
+          <p class="l-tag">Топпинги</p>
+          <h2 class="l-h2" id="boxTitle">Собери свой бокс</h2>
+          <p class="l-lead" id="boxLead">Нажимай на миски — топпинг сразу окажется на картошке. Каждый +30с, сочетай как хочешь.</p>
+        </div>
+        <div class="l-split">
+          <div class="l-stage">
+            <div class="l-box" id="boxPic">
+              <img id="boxBase" src="img/items/fries_classic.webp" width="900" height="530" alt="Классический Чиз" loading="lazy">
+              <div id="boxBubbles"></div>
+            </div>
+            <div class="l-stage__info">
+              <div>
+                <p class="l-box__label" id="boxLabel" aria-live="polite">Классический Чиз</p>
+                <button class="link-btn l-self-start" type="button" id="boxReset" hidden>Убрать все топпинги</button>
+              </div>
+              <span class="pill pill--lg" id="boxPrice">319с</span>
+            </div>
+            <a class="btn btn--primary btn--lg btn--block" id="boxOrder" href="order.html#item=fries_classic">Собрать такой на сайте</a>
+          </div>
+          <div class="l-tops" id="boxTops" role="group" aria-label="Топпинги"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="l-how l-anchor" id="how" aria-labelledby="howTitle">
+      <div class="l-wrap">
+        <h2 class="l-h2 l-h2--sm" id="howTitle">Как работает предзаказ</h2>
+        <ol class="l-steps">
+          <li class="l-step">
+            <span class="l-step__n" aria-hidden="true">1</span>
+            <h3>Выбери на сайте</h3>
+            <p>Картошку, соус, топпинги и время, к которому всё должно быть готово.</p>
+          </li>
+          <li class="l-step">
+            <span class="l-step__n" aria-hidden="true">2</span>
+            <h3>Отправь в WhatsApp</h3>
+            <p>Сайт соберёт заказ в готовое сообщение — останется нажать «Отправить» и оплатить заказ в WhatsApp.</p>
+          </li>
+          <li class="l-step">
+            <span class="l-step__n" aria-hidden="true">3</span>
+            <h3>Забери горячим</h3>
+            <p>Подходи к своему времени и забирай заказ. Без очереди и ожидания.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="l-where l-anchor" id="where" aria-labelledby="whereTitle">
+      <div class="l-wrap l-where__row">
+        <figure class="l-where__photo">
+          <img src="img/store.webp" width="1000" height="1250" loading="lazy"
+               alt="Стойка Fryday у главного входа в ТРЦ «Ала-Арча»: неоновая вывеска FRY DAY и меню на витрине">
+        </figure>
+        <div class="l-where__info">
+          <h2 class="l-h2" id="whereTitle">Где нас найти</h2>
+          <dl class="l-dl">
+            <div data-cfg-row>
+              <dt>Адрес</dt>
+              <dd data-cfg="ADDRESS"></dd>
+            </div>
+            <div>
+              <dt>Внутри ТРЦ</dt>
+              <dd class="l-dl__accent">1 этаж — главный вход</dd>
+            </div>
+            <div data-hours-row>
+              <dt>Часы работы</dt>
+              <dd data-hours>Ежедневно с 10:00 до 22:00</dd>
+            </div>
+            <div data-cfg-row>
+              <dt>Телефон</dt>
+              <dd><a data-cfg="PHONE_DISPLAY" data-cfg-tel></a></dd>
+            </div>
+          </dl>
+          <div class="l-actions">
+            <a class="btn btn--primary btn--lg" data-cfg-href="MAP_URL" rel="noopener">
+              <svg class="l-ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+              Маршрут в 2ГИС
+            </a>
+            <a class="btn btn--lg l-btn-outline" data-cfg-tel-href="PHONE_DISPLAY">Позвонить</a>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="section section--white" id="toppings" aria-labelledby="toppingsTitle" hidden>
-      <div class="container">
-        <h2 id="toppingsTitle">Топпинги</h2>
-        <p class="toppings-line">Идеальное дополнение к твоему боксу</p>
-        <div class="toppings" id="landingToppings"></div>
-      </div>
-    </section>
-
-    <section class="section" id="place" aria-labelledby="placeTitle">
-      <div class="container">
-        <h2 id="placeTitle">Адрес и часы</h2>
-        <div class="info">
-          <div class="info__row" data-cfg-row>
-            <span class="info__label">Адрес</span>
-            <span class="info__value" data-cfg="ADDRESS"></span>
-          </div>
-          <div class="info__row" data-hours-row>
-            <span class="info__label">Часы работы</span>
-            <span class="info__value" data-hours>—</span>
-          </div>
-          <div class="info__row" data-cfg-row>
-            <span class="info__label">Телефон</span>
-            <a class="info__value" data-cfg="PHONE_DISPLAY" data-cfg-tel></a>
-          </div>
+    <section class="l-cta" aria-labelledby="ctaTitle">
+      <div class="l-wrap l-cta__row">
+        <div>
+          <h2 class="l-h2" id="ctaTitle">Проголодался? Закажи заранее</h2>
+          <p>Быстрее всего — оформить заказ на сайте. Остались вопросы — пиши нам в <a data-wa-greeting="Здравствуйте! У меня вопрос.">WhatsApp</a>.</p>
         </div>
-        <div class="actions">
-          <a class="btn btn--secondary" data-cfg-href="MAP_URL" rel="noopener">Открыть на карте</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section--white" id="contact" aria-labelledby="contactTitle">
-      <div class="container">
-        <h2 id="contactTitle">Связаться</h2>
-        <p class="section__lead">Мы не всегда успеваем отвечать в WhatsApp сразу — большинство ответов уже есть в разделе «Вопросы и ответы».</p>
-        <div class="actions">
-          <a class="btn btn--wa" data-wa-greeting="Здравствуйте! У меня вопрос." hidden>Написать в WhatsApp</a>
-          <a class="btn btn--secondary" href="faq.html">Вопросы и ответы</a>
-          <a class="btn btn--secondary" data-cfg-href="INSTAGRAM_URL" rel="noopener">Instagram</a>
-        </div>
+        <a class="btn btn--primary btn--lg" href="order.html">Сделать предзаказ</a>
       </div>
     </section>
   </main>
 
-  <footer class="site-footer">
-    <div class="container">
-      <nav aria-label="Ссылки">
-        <a href="order.html">Предзаказ</a>
+  <footer class="l-footer">
+    <div class="l-wrap l-footer__row">
+      <div class="l-footer__brand">
+        <img src="img/brand/logo-192.png" width="192" height="192" alt="" loading="lazy">
+        <span>© <span data-year></span> <span data-cfg="BRAND">Fryday</span> · Бишкек</span>
+      </div>
+      <nav aria-label="Полезные ссылки">
         <a href="faq.html">Вопросы и ответы</a>
         <a href="privacy.html">Конфиденциальность</a>
+        <a data-cfg-href="INSTAGRAM_URL" rel="noopener">Instagram</a>
       </nav>
-      <p>© <span data-year></span> <span data-cfg="BRAND">Fryday</span></p>
     </div>
   </footer>
 

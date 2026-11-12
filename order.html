@@ -109,11 +109,38 @@
             <div class="field__error" id="phoneErr" hidden></div>
           </div>
 
-          <div class="field" id="fTime">
-            <label for="readyAt">Время готовности</label>
-            <select id="readyAt" name="readyAt" required aria-describedby="timeErr"></select>
+          <!-- Pickup time: day → "as soon as possible", or hour → minute. order.js fills it
+               and writes the chosen slot into the hidden #readyAt input. -->
+          <fieldset class="field tp" id="fTime" aria-describedby="timeErr">
+            <legend class="tp__legend">Когда приготовить?</legend>
+            <input type="hidden" id="readyAt" name="readyAt" value="">
+            <div class="tp__days" id="tpDays" role="group" aria-label="День"></div>
+            <p class="tp__closed" id="tpClosed" hidden></p>
+            <button class="tp__asap" type="button" id="tpAsap" aria-pressed="false" hidden>
+              <span class="tp__asap-ico" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3L5 13.5h6L10 21l8-10.5h-6L13 3z"/></svg>
+              </span>
+              <span class="tp__asap-text">
+                <span class="tp__asap-title">Как можно скорее</span>
+                <span class="tp__asap-sub" id="tpAsapSub"></span>
+              </span>
+              <span class="tp__radio" aria-hidden="true"></span>
+            </button>
+            <p class="tp__or" id="tpOr" aria-hidden="true" hidden>или ко времени</p>
+            <div id="tpHoursWrap" hidden>
+              <p class="tp__label" id="tpHourLabel">Час</p>
+              <div class="tp__grid" id="tpHours" role="group" aria-labelledby="tpHourLabel"></div>
+            </div>
+            <div id="tpMinsWrap" hidden>
+              <p class="tp__label" id="tpMinLabel">Минуты</p>
+              <div class="tp__grid" id="tpMins" role="group" aria-labelledby="tpMinLabel"></div>
+            </div>
+            <div class="tp__summary" id="tpSummary" role="status" hidden>
+              <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+              <span id="tpSummaryText"></span>
+            </div>
             <div class="field__error" id="timeErr" hidden></div>
-          </div>
+          </fieldset>
 
           <div class="field">
             <label for="comment">Комментарий <span class="muted">(необязательно)</span></label>
