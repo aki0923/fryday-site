@@ -1142,6 +1142,87 @@ html.is-locked, html.is-locked body { overflow: hidden; }
 
 .opt.is-off { opacity: .5; cursor: not-allowed; }
 
+/* extra sauces in the item sheet: compact two-column chips */
+
+.sauces { margin: 18px 0 0; padding: 0; border: 0; min-width: 0; }
+.sauces__head {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+  width: 100%;
+  margin-bottom: 8px; padding: 0;
+  font-weight: 900; color: var(--red-dark); font-size: 1.1rem;
+}
+.sauces__price { font-size: .85rem; font-weight: 700; color: var(--text-muted); }
+
+.sauces__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.sauce-chip {
+  position: relative;
+  display: flex; align-items: center; gap: 7px;
+  min-width: 0;
+  min-height: 46px;
+  padding: 6px 7px 6px 9px;
+  background: var(--card);
+  border: 2px solid transparent;
+  border-radius: 999px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color .15s var(--ease), background-color .15s var(--ease);
+}
+.sauce-chip__cb {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  margin: 0; opacity: 0;
+  cursor: inherit;
+}
+.sauce-chip__dot {
+  flex: none;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--sauce, var(--yellow));
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .12), inset 0 -4px 0 rgba(0, 0, 0, .08);
+}
+.sauce-chip__name {
+  flex: 1; min-width: 0;
+  font-weight: 700; font-size: clamp(.8rem, 3.7vw, .95rem); line-height: 1.15;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sauce-chip__note { flex: none; font-size: .8rem; font-weight: 700; color: var(--text-muted); }
+.sauce-chip__mark {
+  display: none;
+  position: absolute; top: -7px; right: -5px;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 0 0 2px var(--cream);
+}
+.sauce-chip__mark::before,
+.sauce-chip__mark::after {
+  content: ""; position: absolute; left: 50%; top: 50%;
+  height: 2px; border-radius: 2px; background: #fff;
+}
+/* a check mark from two strokes */
+.sauce-chip__mark::before { width: 6px; margin: 1px 0 0 -6px; transform: rotate(45deg); }
+.sauce-chip__mark::after { width: 11px; margin: -1px 0 0 -3px; transform: rotate(-50deg); }
+
+.sauce-chip.is-on { border-color: var(--red); background: #FFF1EE; }
+.sauce-chip.is-on .sauce-chip__mark { display: block; }
+
+.sauce-chip:has(.sauce-chip__cb:focus-visible) { outline: 3px solid var(--yellow); outline-offset: 2px; }
+.sauce-chip.is-off { opacity: .5; cursor: not-allowed; }
+.sauce-chip.is-off .sauce-chip__name { text-decoration: line-through; }
+
+/* small phones (≈320px): a little tighter; "нет" gives way to the strike-through */
+@media (max-width: 360px) {
+  .sauces__grid { gap: 6px; }
+  .sauce-chip { gap: 6px; padding: 6px 8px; }
+  .sauce-chip__dot { width: 18px; height: 18px; }
+  .sauce-chip.is-off .sauce-chip__note { display: none; }
+}
+
 /* cart lines */
 
 .cart-line {

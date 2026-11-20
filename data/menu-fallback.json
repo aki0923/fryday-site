@@ -300,6 +300,182 @@
       ],
       "available": true,
       "order": 7
+    },
+    {
+      "id": "sauce_bbq",
+      "kind": "топпинг",
+      "title": "Соус барбекю",
+      "price": 30,
+      "appliesTo": [
+        "fries_classic",
+        "fries_double",
+        "fries_ketchup",
+        "fries_pesto",
+        "fries_sesame",
+        "fries_bbq",
+        "fries_garlic",
+        "fries_truffle",
+        "fries_chili",
+        "fries_nut",
+        "hotdog_chicken",
+        "hotdog_beef"
+      ],
+      "available": true,
+      "order": 11
+    },
+    {
+      "id": "sauce_cheese",
+      "kind": "топпинг",
+      "title": "Соус сырный",
+      "price": 30,
+      "appliesTo": [
+        "fries_classic",
+        "fries_double",
+        "fries_ketchup",
+        "fries_pesto",
+        "fries_sesame",
+        "fries_bbq",
+        "fries_garlic",
+        "fries_truffle",
+        "fries_chili",
+        "fries_nut",
+        "hotdog_chicken",
+        "hotdog_beef"
+      ],
+      "available": true,
+      "order": 12
+    },
+    {
+      "id": "sauce_sesame",
+      "kind": "топпинг",
+      "title": "Соус кунжутный",
+      "price": 30,
+      "appliesTo": [
+        "fries_classic",
+        "fries_double",
+        "fries_ketchup",
+        "fries_pesto",
+        "fries_sesame",
+        "fries_bbq",
+        "fries_garlic",
+        "fries_truffle",
+        "fries_chili",
+        "fries_nut",
+        "hotdog_chicken",
+        "hotdog_beef"
+      ],
+      "available": true,
+      "order": 13
+    },
+    {
+      "id": "sauce_ketchup",
+      "kind": "топпинг",
+      "title": "Соус томатный (кетчуп)",
+      "price": 30,
+      "appliesTo": [
+        "fries_classic",
+        "fries_double",
+        "fries_ketchup",
+        "fries_pesto",
+        "fries_sesame",
+        "fries_bbq",
+        "fries_garlic",
+        "fries_truffle",
+        "fries_chili",
+        "fries_nut",
+        "hotdog_chicken",
+        "hotdog_beef"
+      ],
+      "available": true,
+      "order": 14
+    },
+    {
+      "id": "sauce_truffle",
+      "kind": "топпинг",
+      "title": "Соус трюфельный",
+      "price": 30,
+      "appliesTo": [
+        "fries_classic",
+        "fries_double",
+        "fries_ketchup",
+        "fries_pesto",
+        "fries_sesame",
+        "fries_bbq",
+        "fries_garlic",
+        "fries_truffle",
+        "fries_chili",
+        "fries_nut",
+        "hotdog_chicken",
+        "hotdog_beef"
+      ],
+      "available": true,
+      "order": 15
+    },
+    {
+      "id": "sauce_chili",
+      "kind": "топпинг",
+      "title": "Соус Чили",
+      "price": 30,
+      "appliesTo": [
+        "fries_classic",
+        "fries_double",
+        "fries_ketchup",
+        "fries_pesto",
+        "fries_sesame",
+        "fries_bbq",
+        "fries_garlic",
+        "fries_truffle",
+        "fries_chili",
+        "fries_nut",
+        "hotdog_chicken",
+        "hotdog_beef"
+      ],
+      "available": true,
+      "order": 16
+    },
+    {
+      "id": "sauce_nut",
+      "kind": "топпинг",
+      "title": "Соус ореховый",
+      "price": 30,
+      "appliesTo": [
+        "fries_classic",
+        "fries_double",
+        "fries_ketchup",
+        "fries_pesto",
+        "fries_sesame",
+        "fries_bbq",
+        "fries_garlic",
+        "fries_truffle",
+        "fries_chili",
+        "fries_nut",
+        "hotdog_chicken",
+        "hotdog_beef"
+      ],
+      "available": true,
+      "order": 17
+    },
+    {
+      "id": "sauce_garlic",
+      "kind": "топпинг",
+      "title": "Соус чесночный",
+      "price": 30,
+      "appliesTo": [
+        "fries_classic",
+        "fries_double",
+        "fries_ketchup",
+        "fries_pesto",
+        "fries_sesame",
+        "fries_bbq",
+        "fries_garlic",
+        "fries_truffle",
+        "fries_chili",
+        "fries_nut",
+        "hotdog_chicken",
+        "hotdog_beef"
+      ],
+      "available": true,
+      "order": 18
     }
   ]
 }

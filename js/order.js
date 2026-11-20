@@ -940,6 +940,61 @@
     openSheet('item');
   }
 
+  /* ---------- extra sauces: compact chips instead of a photo list ---------- */
+
+  var SAUCE_CHIP = {
+    sauce_bbq: ['Барбекю', '#6A2D1E'],
+    sauce_cheese: ['Сырный', '#F2C230'],
+    sauce_sesame: ['Кунжутный', '#C8A46A'],
+    sauce_ketchup: ['Кетчуп', '#D3302A'],
+    sauce_truffle: ['Трюфельный', '#3B3631'],
+    sauce_chili: ['Чили', '#E8501F'],
+    sauce_nut: ['Ореховый', '#9C6B3C'],
+    sauce_garlic: ['Чесночный', '#F1E8CF']
+  };
+
+  // "Соус томатный (кетчуп)" → "Томатный (кетчуп)" for sauces added later without a preset.
+  function sauceShortName(o) {
+    if (SAUCE_CHIP[o.id]) return SAUCE_CHIP[o.id][0];
+    var s = String(o.title || '').replace(/^\s*соус\s+/i, '').trim() || String(o.title || '');
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  }
+
+  function renderSauceChips(sauces, onToggle) {
+    var prices = sauces.map(function (o) { return o.price; });
+    var samePrice = prices.every(function (p) { return p === prices[0]; });
+    var legend = el('legend', { class: 'sauces__head' }, [
+      el('span', null, 'Соусы'),
+      samePrice ? el('span', { class: 'sauces__price' }, '+' + F.formatPrice(prices[0]) + ' за каждый') : null
+    ]);
+    var grid = el('div', { class: 'sauces__grid' });
+    sauces.forEach(function (o) {
+      var on = state.sheetOpts.indexOf(o.id) !== -1;
+      var cb = el('input', {
+        type: 'checkbox', class: 'sauce-chip__cb', value: o.id,
+        'aria-label': o.title + ', ' + (o.available ? '+' + F.formatPrice(o.price) : 'нет в наличии')
+      });
+      cb.checked = on;
+      cb.disabled = !o.available;
+      var chip = el('label', { class: 'sauce-chip' + (on ? ' is-on' : '') + (o.available ? '' : ' is-off') }, [
+        cb,
+        el('span', { class: 'sauce-chip__dot', 'aria-hidden': 'true' }),
+        el('span', { class: 'sauce-chip__name' }, sauceShortName(o)),
+        !o.available ? el('span', { class: 'sauce-chip__note' }, 'нет')
+          : !samePrice ? el('span', { class: 'sauce-chip__note' }, '+' + F.formatPrice(o.price)) : null,
+        el('span', { class: 'sauce-chip__mark', 'aria-hidden': 'true' })
+      ]);
+      var look = SAUCE_CHIP[o.id];
+      if (look) chip.style.setProperty('--sauce', look[1]);
+      cb.addEventListener('change', function () {
+        chip.classList.toggle('is-on', cb.checked);
+        onToggle(o.id, cb.checked);
+      });
+      grid.appendChild(chip);
+    });
+    return el('fieldset', { class: 'sauces' }, [legend, grid]);
+  }
+
   function renderItemSheet() {
     var item = state.sheetItem;
     var m = state.menu;
@@ -978,6 +1033,18 @@
       }));
     }
     renderStepper();
+
+    function toggleOpt(id, on) {
+      var i = state.sheetOpts.indexOf(id);
+      if (on && i === -1) state.sheetOpts.push(id);
+      if (!on && i !== -1) state.sheetOpts.splice(i, 1);
+      refreshTotal();
+    }
+
+    var sauces = opts.filter(F.isSauce);
+    var toppings = opts.filter(function (o) { return !F.isSauce(o); });
+    if (sauces.length) dom.itemBody.appendChild(renderSauceChips(sauces, toggleOpt));
+    opts = toppings;
 
     if (opts.length) {
       var fs = el('fieldset', { class: 'opts' }, [el('legend', null, 'Топпинги')]);

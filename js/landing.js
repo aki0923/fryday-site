@@ -445,7 +445,10 @@
     if (!needsMenu) return;
 
     F.loadMenu({ force: !!force }).then(function (res) {
-      var menu = res.menu;
+      // Extra sauces are a pre-order thing only: the homepage works with toppings alone.
+      var menu = Object.assign({}, res.menu, {
+        options: (res.menu.options || []).filter(function (o) { return !F.isSauce(o); })
+      });
       renderSauces(menu);
       renderDogs(menu);
       renderBox(menu);

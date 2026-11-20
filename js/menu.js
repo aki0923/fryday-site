@@ -350,6 +350,9 @@
     fetchTimeout: fetchTimeout,
     loadMenu: load,
     isOutdated: isOutdated,
+    // Extra sauces live in the Меню sheet as toppings whose id starts with "sauce_".
+    // The pre-order shows them as a separate compact block; the homepage ignores them.
+    isSauce: function (o) { return !!o && /^sauce_/.test(String(o.id)); },
     reducedMotion: function () {
       try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; }
     }
